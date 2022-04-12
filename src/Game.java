@@ -7,12 +7,26 @@ public class Game {
     private Player currentPlayer;
     private List<GameTurn> turnList;
     private Boolean finished;
+    private List<Score> score;
 
     public Game(Player playerX, Player playerO) {
         this.playerX = playerX;
         this.playerO = playerO;
         this.turnList = new ArrayList<>();
         this.finished = false;
+        List<Score> scoreList = new ArrayList<>();
+
+        scoreList.add(new Score("A1"));
+        scoreList.add(new Score("A2"));
+        scoreList.add(new Score("A3"));
+        scoreList.add(new Score("B1"));
+        scoreList.add(new Score("B2"));
+        scoreList.add(new Score("B3"));
+        scoreList.add(new Score("C1"));
+        scoreList.add(new Score("C2"));
+        scoreList.add(new Score("C3"));
+
+        this.score = scoreList;
     }
 
     public Boolean getFinished() {
@@ -21,6 +35,14 @@ public class Game {
 
     public void setFinished(Boolean finished) {
         this.finished = finished;
+    }
+
+    public List<Score> getScore() {
+        return score;
+    }
+
+    public void setScore(List<Score> score) {
+        this.score = score;
     }
 
     public Player getCurrentPlayer() {
