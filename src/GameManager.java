@@ -1,10 +1,52 @@
-import java.util.Iterator;
-import java.util.Optional;
-import java.util.Scanner;
+import java.util.*;
+import java.util.stream.Stream;
 
 public class GameManager {
 
     static Scanner userInput = new Scanner(System.in);
+
+    private List<ScoreRelation> scoreRelations = new ArrayList<>();
+
+
+    private void createScoreRelation(){
+        //A1
+        scoreRelations.add(new ScoreRelation("A1","A2","A3"));
+        scoreRelations.add(new ScoreRelation("A1","B1","C1"));
+        scoreRelations.add(new ScoreRelation("A1","B2","C3"));
+        //A2
+        scoreRelations.add(new ScoreRelation("A2","A1","A3"));
+        scoreRelations.add(new ScoreRelation("A2","B2","C2"));
+        //A3
+        scoreRelations.add(new ScoreRelation("A3","A2","A1"));
+        scoreRelations.add(new ScoreRelation("A3","B3","C3"));
+        scoreRelations.add(new ScoreRelation("A3","B2","C1"));
+
+        //B1
+        scoreRelations.add(new ScoreRelation("B1","B2","B3"));
+        scoreRelations.add(new ScoreRelation("B1","A1","C1"));
+        //B2
+        scoreRelations.add(new ScoreRelation("B2","B1","B3"));
+        scoreRelations.add(new ScoreRelation("B2","A1","C3"));
+        scoreRelations.add(new ScoreRelation("B2","A3","C1"));
+        scoreRelations.add(new ScoreRelation("B2","A2","C2"));
+        //B3
+        scoreRelations.add(new ScoreRelation("B3","B2","B1"));
+        scoreRelations.add(new ScoreRelation("B3","A3","C3"));
+
+        //C1
+        scoreRelations.add(new ScoreRelation("C1","C2","C3"));
+        scoreRelations.add(new ScoreRelation("C1","B1","A1"));
+        scoreRelations.add(new ScoreRelation("C1","B2","A3"));
+        //C2
+        scoreRelations.add(new ScoreRelation("C2","C1","C3"));
+        scoreRelations.add(new ScoreRelation("C2","B2","A2"));
+        //C3
+        scoreRelations.add(new ScoreRelation("C3","C2","C1"));
+        scoreRelations.add(new ScoreRelation("C3","B3","A3"));
+        scoreRelations.add(new ScoreRelation("C3","B2","A1"));
+
+
+    }
 
     public void showGameStatus(Game game) {
         String canvas = Character.toString(183);
@@ -15,10 +57,9 @@ public class GameManager {
 
 
         System.out.println();
-        System.out.println("The player in charge is " + game.getCurrentPlayer().getName() + " - " + game.getCurrentPlayer().getType());
+        if (!game.getFinished()) System.out.println("The player in charge is " + game.getCurrentPlayer().getName() + " - " + game.getCurrentPlayer().getType());
         System.out.println();
-        System.out.println(canvas + canvas + canvas + "   A   B   C "  + canvas);
-        //System.out.println();
+        System.out.println("      A   B   C  ");
 
         String lineToPrint;
         Score tempScore;
@@ -36,10 +77,9 @@ public class GameManager {
 
 
             System.out.println(lineToPrint);
-            if (c!=3) System.out.println("------------------");
+            if (c!=3) System.out.println("     -----------");
         }
 
-        //System.out.println(canvasLine);
         System.out.println();
     }
 
@@ -57,6 +97,7 @@ public class GameManager {
 
         Game game = new Game(xPlayer,oPlayer);
         game.setCurrentPlayer(xPlayer);
+        createScoreRelation();
         executeGameTurn(game);
     }
 
@@ -72,7 +113,12 @@ public class GameManager {
             else newPlayer = game.getPlayerO();
             game.setCurrentPlayer(newPlayer);
             executeGameTurn(game);
-        } else finishGame();
+        } else {
+            game.setFinished(true);
+            showWinner(game);
+            showGameStatus(game);
+            finishGame(game);
+        }
     }
 
     private void recordGameTurn(Game game,GameTurn gameTurn){
@@ -98,30 +144,30 @@ public class GameManager {
         //procura por player type do mesmo tipo relacionada a ultima jogada
         PlayerType lastType = lastTurn.getPlayer().getType();
 
-        if(lastTurn.getColumn().equals("A") && lastTurn.getLine().equals("1")){ //A1
-            //verificando as possíveis combinações de ganho:
-            Optional<Score> a2 = game.getScore().stream().filter(score -> score.getPos().equals("A2")).findFirst();
-            Optional<Score> a3 = game.getScore().stream().filter(score -> score.getPos().equals("A3")).findFirst();
-            if(a2.isPresent() && a3.isPresent()) if (a2.get().getType() == lastType && a3.get().getType() == lastType) return true;
-            //-----
-            Optional<Score> b1 = game.getScore().stream().filter(score -> score.getPos().equals("B1")).findFirst();
-            Optional<Score> c1 = game.getScore().stream().filter(score -> score.getPos().equals("C1")).findFirst();
-            if(b1.isPresent() && c1.isPresent()) if (b1.get().getType() == lastType && c1.get().getType() == lastType) return true;
-            //-----
-            Optional<Score> b2 = game.getScore().stream().filter(score -> score.getPos().equals("B2")).findFirst();
-            Optional<Score> c3 = game.getScore().stream().filter(score -> score.getPos().equals("C3")).findFirst();
-            if(b2.isPresent() && c3.isPresent()) if (b2.get().getType() == lastType && c3.get().getType() == lastType) return true;
+        List<ScoreRelation> scoreRelationList = new ArrayList<>();
+        for (ScoreRelation scoreRelation:scoreRelations) {
+            if(scoreRelation.getMainPos().equals(lastTurn.getColumn() + lastTurn.getLine())) scoreRelationList.add(scoreRelation);
         }
 
+        for (ScoreRelation scoreRelation:scoreRelationList) {
+            Optional<Score> rel1 = game.getScore().stream().filter(score -> score.getPos().equals(scoreRelation.getRelatedPos1())).findFirst();
+            Optional<Score> rel2 = game.getScore().stream().filter(score -> score.getPos().equals(scoreRelation.getRelatedPos2())).findFirst();
+            if(rel1.isPresent() && rel2.isPresent()) if (rel1.get().getType() == lastType && rel2.get().getType() == lastType) return true;
+        }
 
         return false;
-//        if (!game.getFinished()) executeGameTurn(game);
-//        else finishGame();
     }
 
-    private void finishGame(){
+    private void showWinner(Game game){
         System.out.println();
-        System.out.println("Game Over");
+        System.out.println("THE GAME HAS A WINNER!!!");
+        System.out.println();
+        System.out.println("The winner is " + game.getCurrentPlayer().getName() + "! Congratulations!");
+    }
+
+    private void finishGame(Game game){
+        System.out.println();
+        System.out.println("Game Over. Bye-bye players " + game.getPlayerX().getName() + " and " + game.getPlayerO().getName() + ".");
     }
 
     private String getTurnCoordinates(){
@@ -129,6 +175,8 @@ public class GameManager {
         return userInput.nextLine();
     }
 
-
+    private boolean evaluateCoordinates(){
+        return true;
+    }
 
 }
