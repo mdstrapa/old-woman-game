@@ -1,6 +1,6 @@
-package game;
+package main.java.game;
 
-import game.model.*;
+import main.java.game.model.*;
 
 import java.util.*;
 
@@ -12,8 +12,7 @@ public class GameManager {
 
     private List<ScoreRelation> scoreRelations = new ArrayList<>();
 
-
-    private void createScoreRelation(){
+    public void createScoreRelation(){
         //A1
         scoreRelations.add(new ScoreRelation("A1","A2","A3"));
         scoreRelations.add(new ScoreRelation("A1","B1","C1"));
@@ -53,11 +52,9 @@ public class GameManager {
 
     }
 
-
-
     public void startGame(){
         System.out.println();
-        System.out.println("A new game is going do start!!!");
+        System.out.println("A new main.java.game is going do start!!!");
         System.out.println();
         System.out.print("Type the name of the X player: ");
         String xPlayerName = userInput.nextLine();
@@ -100,7 +97,7 @@ public class GameManager {
         }
     }
 
-    private void recordGameTurn(Game game,GameTurn gameTurn){
+    public void recordGameTurn(Game game,GameTurn gameTurn){
 
         PlayerType playerType = gameTurn.getPlayer().getType();
         String column = gameTurn.getColumn();
@@ -112,7 +109,7 @@ public class GameManager {
 
     }
 
-    private boolean evaluateTurn(Game game){
+    public boolean evaluateTurn(Game game){
 
         //antes da 5ª jogada nem avalia pq nao tem como ganhar
         if(game.getTurnList().size() < 5) return false;
@@ -152,7 +149,7 @@ public class GameManager {
         return coordinates;
     }
 
-    private boolean evaluateCoordinates(Game game, String userInput){
+    public boolean evaluateCoordinates(Game game, String userInput){
         if(userInput.length()!=2) return false;
         if(userInput.charAt(0) != 'A' && userInput.charAt(0) != 'B' && userInput.charAt(0) != 'C') return false;
         if(userInput.charAt(1) != '1' && userInput.charAt(1) != '2' && userInput.charAt(1) != '3') return false;

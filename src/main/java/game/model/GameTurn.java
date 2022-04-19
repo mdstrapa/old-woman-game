@@ -1,4 +1,4 @@
-package game.model;
+package main.java.game.model;
 
 public class GameTurn {
     private Player player;

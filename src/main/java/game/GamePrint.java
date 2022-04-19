@@ -1,8 +1,8 @@
-package game;
+package main.java.game;
 
-import game.model.Game;
-import game.model.GameResult;
-import game.model.Score;
+import main.java.game.model.Game;
+import main.java.game.model.GameResult;
+import main.java.game.model.Score;
 
 import java.util.Iterator;
 
@@ -52,7 +52,7 @@ public class GamePrint {
 
     public void showGameDraw(){
         System.out.println();
-        System.out.println("The game has NO winner!");
+        System.out.println("The main.java.game has NO winner!");
     }
 
     public void showGameOver(Game game){
