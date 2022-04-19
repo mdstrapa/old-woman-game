@@ -1,3 +1,5 @@
+package game.model;
+
 public class GameTurn {
     private Player player;
     private String column;

@@ -1,9 +1,14 @@
+package game;
+
+import game.model.*;
+
 import java.util.*;
-import java.util.stream.Stream;
 
 public class GameManager {
 
-    static Scanner userInput = new Scanner(System.in);
+    Scanner userInput = new Scanner(System.in);
+
+    GamePrint gamePrint = new GamePrint();
 
     private List<ScoreRelation> scoreRelations = new ArrayList<>();
 
@@ -48,40 +53,7 @@ public class GameManager {
 
     }
 
-    public void showGameStatus(Game game) {
-        String canvas = Character.toString(183);
-        String canvasLine = "";
-        for(int i = 0;i<18;i++) {
-            canvasLine = canvasLine + canvas;
-        }
 
-
-        System.out.println();
-        if (!game.getFinished()) System.out.println("The player in charge is " + game.getCurrentPlayer().getName() + " - " + game.getCurrentPlayer().getType());
-        System.out.println();
-        System.out.println("      A   B   C  ");
-
-        String lineToPrint;
-        Score tempScore;
-        for(int c = 1;c<4;c++){
-            Integer finalC = c;
-            lineToPrint = " " + finalC + " " + canvas + "  ";
-            Iterator<Score> line = game.getScore().stream().filter(score -> score.getPos().contains(finalC.toString())).iterator();
-            tempScore = line.next();
-            lineToPrint = lineToPrint + (tempScore.getType() != null ? tempScore.getType() : " ");
-
-            tempScore = line.next();
-            lineToPrint = lineToPrint + " | " + (tempScore.getType() != null ? tempScore.getType() : " ");
-            tempScore = line.next();
-            lineToPrint = lineToPrint + " | " + (tempScore.getType() != null ? tempScore.getType() : " ") + " " + canvas;
-
-
-            System.out.println(lineToPrint);
-            if (c!=3) System.out.println("     -----------");
-        }
-
-        System.out.println();
-    }
 
     public void startGame(){
         System.out.println();
@@ -93,7 +65,7 @@ public class GameManager {
         String oPlayerName = userInput.nextLine();
 
         Player xPlayer = new Player(xPlayerName,PlayerType.X);
-        Player oPlayer = new Player(oPlayerName,PlayerType.O);
+        Player oPlayer = new Player(oPlayerName, PlayerType.O);
 
         Game game = new Game(xPlayer,oPlayer);
         game.setCurrentPlayer(xPlayer);
@@ -102,22 +74,29 @@ public class GameManager {
     }
 
     private void executeGameTurn(Game game){
-        showGameStatus(game);
-        String turnCoordinates = getTurnCoordinates();
+        gamePrint.showGameStatus(game);
+        String turnCoordinates = getTurnCoordinates(game);
         GameTurn gameTurn = new GameTurn(game.getCurrentPlayer(),turnCoordinates.substring(0,1),turnCoordinates.substring(1));
         game.getTurnList().add(gameTurn);
         recordGameTurn(game,gameTurn);
-        if (!evaluateTurn(game)){
+        if (evaluateTurn(game)){
+            game.setResult(GameResult.WINNER);
+            game.setWinner(game.getCurrentPlayer());
+            gamePrint.showWinner(game);
+            gamePrint.showGameStatus(game);
+            gamePrint.showGameOver(game);
+        } else if(game.getTurnList().size() == 9) {
+            game.setResult(GameResult.DRAW);
+            gamePrint.showGameDraw();
+            gamePrint.showGameStatus(game);
+            gamePrint.showGameOver(game);
+        }else {
             Player newPlayer;
             if (game.getCurrentPlayer().getType() == PlayerType.O) newPlayer = game.getPlayerX();
             else newPlayer = game.getPlayerO();
             game.setCurrentPlayer(newPlayer);
             executeGameTurn(game);
-        } else {
-            game.setFinished(true);
-            showWinner(game);
-            showGameStatus(game);
-            finishGame(game);
+
         }
     }
 
@@ -158,24 +137,28 @@ public class GameManager {
         return false;
     }
 
-    private void showWinner(Game game){
-        System.out.println();
-        System.out.println("THE GAME HAS A WINNER!!!");
-        System.out.println();
-        System.out.println("The winner is " + game.getCurrentPlayer().getName() + "! Congratulations!");
+    private String getTurnCoordinates(Game game){
+
+        boolean validCoordinates = false;
+        String coordinates = "";
+
+        while (!validCoordinates){
+            System.out.print("Type the coordinates of your choice:");
+            coordinates = userInput.nextLine();
+            validCoordinates = evaluateCoordinates(game,coordinates);
+            if(!validCoordinates) System.out.println("The coordinates you typed are invalid. Please try it again.");
+        }
+
+        return coordinates;
     }
 
-    private void finishGame(Game game){
-        System.out.println();
-        System.out.println("Game Over. Bye-bye players " + game.getPlayerX().getName() + " and " + game.getPlayerO().getName() + ".");
-    }
-
-    private String getTurnCoordinates(){
-        System.out.print("Type the coordinates of your choice:");
-        return userInput.nextLine();
-    }
-
-    private boolean evaluateCoordinates(){
+    private boolean evaluateCoordinates(Game game, String userInput){
+        if(userInput.length()!=2) return false;
+        if(userInput.charAt(0) != 'A' && userInput.charAt(0) != 'B' && userInput.charAt(0) != 'C') return false;
+        if(userInput.charAt(1) != '1' && userInput.charAt(1) != '2' && userInput.charAt(1) != '3') return false;
+        for (GameTurn turn: game.getTurnList()) {
+            if((turn.getColumn() + turn.getLine()).equals(userInput)) return false;
+        }
         return true;
     }
 

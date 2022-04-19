@@ -1,3 +1,5 @@
+package game.model;
+
 public class ScoreRelation {
     private String mainPos;
     private String relatedPos1;

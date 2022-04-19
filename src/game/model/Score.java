@@ -1,3 +1,5 @@
+package game.model;
+
 public class Score {
     private PlayerType type;
     private String pos;

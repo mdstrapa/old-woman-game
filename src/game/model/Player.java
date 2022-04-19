@@ -1,3 +1,5 @@
+package game.model;
+
 public class Player {
     private String name;
     private PlayerType type;

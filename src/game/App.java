@@ -1,3 +1,5 @@
+package game;
+
 import java.util.Scanner;
 
 public class App {
@@ -7,7 +9,7 @@ public class App {
         GameManager newGame = new GameManager();
 
         System.out.println("Welcome Players!!");
-        System.out.println("This is the Old-Woman Game");
+        System.out.println("This is the Old-Woman game.model.Game");
         System.out.println("");
         System.out.print("Do you wanna start a new game? [Y | N] : ");
         String userAnswer = userInput.nextLine();
@@ -20,6 +22,5 @@ public class App {
     private static void endProgram() {
         System.out.println("");
         System.out.println("Bye-bye then! See you!");
-        System.out.println("======================");
     }
 }

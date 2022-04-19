@@ -1,3 +1,5 @@
+package game.model;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -5,15 +7,17 @@ public class Game {
     private Player playerX;
     private Player playerO;
     private Player currentPlayer;
+    private Player winner;
     private List<GameTurn> turnList;
-    private Boolean finished;
+    private GameResult result;
+
     private List<Score> score;
 
     public Game(Player playerX, Player playerO) {
         this.playerX = playerX;
         this.playerO = playerO;
         this.turnList = new ArrayList<>();
-        this.finished = false;
+        this.result = GameResult.ON;
         List<Score> scoreList = new ArrayList<>();
 
         scoreList.add(new Score("A1"));
@@ -29,13 +33,22 @@ public class Game {
         this.score = scoreList;
     }
 
-    public Boolean getFinished() {
-        return finished;
+    public Player getWinner() {
+        return winner;
     }
 
-    public void setFinished(Boolean finished) {
-        this.finished = finished;
+    public void setWinner(Player winner) {
+        this.winner = winner;
     }
+
+    public GameResult getResult() {
+        return result;
+    }
+
+    public void setResult(GameResult result) {
+        this.result = result;
+    }
+
 
     public List<Score> getScore() {
         return score;
