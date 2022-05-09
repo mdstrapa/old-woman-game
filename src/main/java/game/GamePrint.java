@@ -24,9 +24,9 @@ public class GamePrint {
         String lineToPrint;
         Score tempScore;
         for(int c = 1;c<4;c++){
-            Integer finalC = c;
+            int finalC = c;
             lineToPrint = " " + finalC + " " + canvas + "  ";
-            Iterator<Score> line = game.getScore().stream().filter(score -> score.getPos().contains(finalC.toString())).iterator();
+            Iterator<Score> line = game.getScore().stream().filter(score -> score.getPos().contains(Integer.toString(finalC))).iterator();
             tempScore = line.next();
             lineToPrint = lineToPrint + (tempScore.getType() != null ? tempScore.getType() : " ");
 

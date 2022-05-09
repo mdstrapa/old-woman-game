@@ -11,7 +11,7 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
 class GameManagerTest {
-    GameManager gameManager = new GameManager();
+    final GameManager gameManager = new GameManager();
     Game game;
     Player playerX;
     Player playerO;
@@ -28,28 +28,28 @@ class GameManagerTest {
     public void should_Return_False_Short_Input() {
         String userInput = "A";
         boolean evaluationResult = gameManager.evaluateCoordinates(game, userInput);
-        assertEquals(false, evaluationResult);
+        assertFalse(evaluationResult);
     }
 
     @Test
     public void should_Return_False_Wrong_First_Char() {
         String userInput = "R1";
         boolean evaluationResult = gameManager.evaluateCoordinates(game, userInput);
-        assertEquals(false, evaluationResult);
+        assertFalse(evaluationResult);
     }
 
     @Test
     public void should_Return_False_Wrong_Second_Char() {
         String userInput = "A5";
         boolean evaluationResult = gameManager.evaluateCoordinates(game, userInput);
-        assertEquals(false, evaluationResult);
+        assertFalse(evaluationResult);
     }
 
     @Test
     public void should_Return_True_Valid_Input() {
         String userInput = "A1";
         boolean evaluationResult = gameManager.evaluateCoordinates(game, userInput);
-        assertEquals(true, evaluationResult);
+        assertTrue(evaluationResult);
     }
 
     @Test
@@ -58,7 +58,7 @@ class GameManagerTest {
         game.getTurnList().add(new GameTurn(playerO,"A","2"));
         game.getTurnList().add(new GameTurn(playerX,"A","3"));
         boolean evaluationResult = gameManager.evaluateTurn(game);
-        assertEquals(false,evaluationResult);
+        assertFalse(evaluationResult);
     }
 
     @Test
@@ -70,7 +70,7 @@ class GameManagerTest {
         game.getTurnList().add(new GameTurn(playerX,"C","1"));
         game.getTurnList().add(new GameTurn(playerO,"C","2"));
         boolean evaluationResult = gameManager.evaluateTurn(game);
-        assertEquals(false,evaluationResult);
+        assertFalse(evaluationResult);
     }
 
     @Test
@@ -97,7 +97,7 @@ class GameManagerTest {
 
         game.setCurrentPlayer(playerX);
         boolean evaluationResult = gameManager.evaluateTurn(game);
-        assertEquals(true,evaluationResult);
+        assertTrue(evaluationResult);
     }
 
 }

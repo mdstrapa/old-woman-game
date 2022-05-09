@@ -6,11 +6,11 @@ import java.util.*;
 
 public class GameManager {
 
-    Scanner userInput = new Scanner(System.in);
+    final Scanner userInput = new Scanner(System.in);
 
-    GamePrint gamePrint = new GamePrint();
+    final GamePrint gamePrint = new GamePrint();
 
-    private List<ScoreRelation> scoreRelations = new ArrayList<>();
+    private final List<ScoreRelation> scoreRelations = new ArrayList<>();
 
     public void createScoreRelation(){
         //A1
@@ -54,7 +54,7 @@ public class GameManager {
 
     public void startGame(){
         System.out.println();
-        System.out.println("A new main.java.game is going do start!!!");
+        System.out.println("A new game is going do start!!!");
         System.out.println();
         System.out.print("Type the name of the X player: ");
         String xPlayerName = userInput.nextLine();
@@ -105,7 +105,7 @@ public class GameManager {
 
         Optional<Score> score = game.getScore().stream().filter(s -> (column + line).equals(s.getPos())).findAny();
 
-        if(score.isPresent()) score.get().setType(playerType);
+        score.ifPresent(value -> value.setType(playerType));
 
     }
 
